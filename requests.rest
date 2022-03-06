@@ -1,0 +1,56 @@
+### Create a USER 1
+POST http://localhost:5000/api/users
+Content-Type: application/json
+
+{
+  "name": "Bob",
+  "email" : "bob@email.com",
+  "password": "bob"
+}
+------------------------------------------------
+### List All Users
+GET http://localhost:5000/api/users
+Authorization Needed
+------------------------------------------------
+### Login User
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+Authorization Needed
+{
+  "email":"bob@email.com",
+  "password":"bob"
+}
+-----------------------------------------------
+### Refresh All Tokens
+GET http://localhost:5000/api/auth/refresh_token
+
+DELETE http://localhost:5000/api/auth/refresh_token
+
+DELETE http://localhost:5000/api/users
+-----------------------------------------------
+### Get list of data
+GET http://localhost:5000/api/data
+
+### Add new data field
+POST http://localhost:5000/api/data
+Content-Type: application/json
+Authorization Needed
+{
+  "title": "Capital Of Countries",
+  "isprivate": true,
+  "data_q": ['What is the capital of India','What is the capital of Japan'],
+  "data_a": ['New Delhi','Tokyo']
+}
+
+### Delete particular data
+DELETE http://localhost:5000/api/data
+Content-Type: application/json
+Authorization Needed
+{
+  "data_id": DATA_ID_HERE
+}
+
+### Get data of specific user
+GET http://localhost:5000/api/data/user
+Content-Type: application/json
+Authorization Needed
