@@ -9,16 +9,21 @@ const router = express.Router();
 router.post('/login', async (req, res) => {
   try {
     console.log(req.cookies, req.get('origin'));
-    const { email, password } = req.body;
-    const users = await pool.query('SELECT * FROM users WHERE user_email = $1', [email]);
-    if (users.rows.length === 0) return res.status(401).json({error:"Email is incorrect"});
+    const { emailid, password } = req.body;
+    const users = await pool.query(`SELECT * FROM users WHERE emailid = '${emailid}'`, async(err, rows)=>{
+      if (err) {
+        res.status(400).json({"error":err.message});
+        return;
+      }
+      if (rows.length == 0) return res.status(401).json({error:"Email is incorrect"});
     //PASSWORD CHECK
-    const validPassword = await bcrypt.compare(password, users.rows[0].user_password);
+    const validPassword = await bcrypt.compare(password, rows[0].password);
     if (!validPassword) return res.status(401).json({error: "Incorrect password"});
     //JWT
-    let tokens = jwtTokens(users.rows[0]);//Gets access and refresh tokens
+    let tokens = jwtTokens(rows[0]);//Gets access and refresh tokens
     res.cookie('refresh_token', tokens.refreshToken, {...(process.env.COOKIE_DOMAIN && {domain: process.env.COOKIE_DOMAIN}) , httpOnly: true,sameSite: 'none', secure: true});
     res.json(tokens);
+    });
   } catch (error) {
     res.status(401).json({error: error.message});
   }

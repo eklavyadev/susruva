@@ -18,15 +18,14 @@ router.get('/',authenticateToken, async (req, res) => {
     res.status(500).json({error: error.message});
   }
 });
-
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDY1NTg4NDQsImV4cCI6MTY0NjU2MjQ0NH0.JiR7h1Zya_nog9UjcpLSm14QeCfo1MCerSx2ghfhRWQ
 // Create User Function
 router.post('/', async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const newUser = await pool.query(
-      'INSERT INTO users (user_name,user_email,user_password) VALUES ($1,$2,$3) RETURNING *'
-      , [req.body.name, req.body.email, hashedPassword]);
-    res.json(jwtTokens(newUser.rows[0]));
+      `INSERT INTO users (roleid, name, emailid, password, active, gender, loginaccess, registrationstageid, usertimezone, usertimezoneoffset, phonenumber) VALUES (7, '${req.body.name}', '${req.body.emailid}', '${hashedPassword}', 1, 1, 1, 1, 'Asia/Calcutta', 330, '${req.body.phonenumber}')`);
+    res.json(jwtTokens(newUser));
   } catch (error) {
     res.status(500).json({error: error.message});
   }
