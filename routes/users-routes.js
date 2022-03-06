@@ -12,13 +12,17 @@ const router = express.Router();
 router.get('/',authenticateToken, async (req, res) => {
   try {
     console.log(req.cookies);
-    const users = await pool.query('SELECT * FROM users');
-    res.json({users : users.rows});
+    const users = await pool.query('SELECT * FROM users', async(err, rows)=>{
+      if (err){
+        res.json({error: err})
+      }
+      res.json({users : rows});
+    });
   } catch (error) {
     res.status(500).json({error: error.message});
   }
 });
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDY1NTg4NDQsImV4cCI6MTY0NjU2MjQ0NH0.JiR7h1Zya_nog9UjcpLSm14QeCfo1MCerSx2ghfhRWQ
+
 // Create User Function
 router.post('/', async (req, res) => {
   try {
