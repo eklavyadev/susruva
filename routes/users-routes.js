@@ -27,13 +27,13 @@ router.get('/',authenticateToken, async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const newUser = await pool.query(
-      `INSERT INTO users (roleid, name, emailid, password, active, gender, loginaccess, registrationstageid, usertimezone, usertimezoneoffset, phonenumber) VALUES (7, '${req.body.name}', '${req.body.emailid}', '${hashedPassword}', 1, ${req.body.gender}, 1, 1, 'Asia/Calcutta', 330, '${req.body.phonenumber}')`, async(err)=>{
+    pool.query(
+      `INSERT INTO users (roleid, name, emailid, password, active, gender, loginaccess, registrationstageid, usertimezone, usertimezoneoffset, phonenumber) VALUES (7, '${req.body.name}', '${req.body.emailid}', '${hashedPassword}', 1, ${req.body.gender}, 1, 1, 'Asia/Calcutta', 330, '${req.body.phonenumber}')`, async(err, rows)=>{
         if (err){
           res.json({error: err})
         }
+        res.json(jwtTokens(req.body.emailid));
       });
-    res.json(jwtTokens(newUser));
   } catch (error) {
     res.status(500).json({error: error.message});
   }

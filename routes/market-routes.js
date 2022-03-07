@@ -1,11 +1,18 @@
 import express from 'express';
 import pool from '../db.js';
+import jwt from 'jsonwebtoken';
+import {authenticateToken} from '../middleware/authorization.js';
 
 const app = express.Router();
 
 // Fetching All marketings
-app.get('/api', async(req, res, next) => {
-    var sql = "select * from marketing"
+app.get('/api', authenticateToken , async(req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) return res.status(401).json({error:"Null token"});
+    const decode = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const username = decode.emailid;
+    var sql = `select * from marketing where username = '${username}'`
     pool.query(sql, async(err, rows) => {
         if (err) {
           res.status(400).json({"error":err.message});
@@ -34,7 +41,12 @@ app.get('/api', async(req, res, next) => {
   });
   
   // Adding marketing
-  app.post("/api/marketing/", (req, res, next) => {
+  app.post("/api/marketing/", authenticateToken, (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) return res.status(401).json({error:"Null token"});
+    const decode = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const username = decode.emailid;
       var errors=[]
       if (!req.body.name){
           errors.push("No name specified");
@@ -100,7 +112,7 @@ app.get('/api', async(req, res, next) => {
           date: today,
           action: req.body.action
       }
-      var sql = `INSERT INTO marketing (name, role, phone, email, class, country, subjects, requirements, Callstat, WAstat, emailstat, regid, date, action) VALUES ('${data.name}','${data.role}','${data.phone}','${data.email}','${data.class}','${data.country}','${data.subjects}','${data.requirements}','${data.Callstat}','${data.WAstat}','${data.emailstat}',NULL,'${data.date}','${data.action}')`
+      var sql = `INSERT INTO marketing (name, role, phone, email, class, country, subjects, requirements, Callstat, WAstat, emailstat, regid, date, action, username) VALUES ('${data.name}','${data.role}','${data.phone}','${data.email}','${data.class}','${data.country}','${data.subjects}','${data.requirements}','${data.Callstat}','${data.WAstat}','${data.emailstat}',NULL,'${data.date}','${data.action}', '${username}')`
       pool.query(sql, function (err, result) {
           if (err){
               res.status(400).json({"error": err})
@@ -125,6 +137,19 @@ app.get('/api', async(req, res, next) => {
               res.json({"message":"Deleted", changes: result})
       });
   })
+
+// All marketing
+    app.get("/api/marketing/", (req, res) => {
+        pool.query(
+            `SELECT * FROM marketing`,
+            function (err, result) {
+                if (err){
+                    res.status(400).json({"error": err})
+                    return;
+                }
+                res.json({"success": result})
+        });
+    })
   // Edit marketing
   app.patch("/api/marketing/:id", (req, res, next) => {
       var errors=[]
