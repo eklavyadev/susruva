@@ -1,10 +1,10 @@
 import mysql from 'mysql'
 
 const pool = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : '',
-  database : 'susruva'
+  host     : 'db4free.net',
+  user     : 'liveuser',
+  password : '12345678',
+  database : 'etuition'
 });
 
 pool.connect(function(err) {
