@@ -1,0 +1,5 @@
+In your App's setting, add up the following in App-Level Environment Variables
+KEYS                    Values
+| ACCESS_TOKEN_SECRET | ikddikfvkmkm
+| REFRESH_TOKEN_SECRET | fmi94nd
+| COOKIE_DOMAIN | /
