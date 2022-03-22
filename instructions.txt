@@ -1,0 +1,5 @@
+Add the following environment variables in your digitalocean app
+
+ACCESS_TOKEN_SECRET = "tg5nuj5u34nviv4i5494"
+REFRESH_TOKEN_SECRET = "rgbmkrow*#hehfbu8"
+COOKIE_DOMAIN = /
