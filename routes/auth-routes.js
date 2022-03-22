@@ -10,7 +10,7 @@ router.post('/login', async (req, res) => {
   try {
     console.log(req.cookies, req.get('origin'));
     const { emailid, password } = req.body;
-    pool.query(`SELECT * FROM users WHERE emailid = '${emailid}'`, async(err, rows)=>{
+    pool.query(`SELECT * FROM leadusers WHERE emailid = '${emailid}'`, async(err, rows)=>{
       if (err) {
         res.status(400).json({"error":err.message});
         return;

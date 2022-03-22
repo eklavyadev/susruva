@@ -12,7 +12,7 @@ const router = express.Router();
 router.get('/',authenticateToken, async (req, res) => {
   try {
     console.log(req.cookies);
-    const users = await pool.query('SELECT * FROM users', async(err, rows)=>{
+    const users = await pool.query('SELECT * FROM leadusers', async(err, rows)=>{
       if (err){
         res.json({error: err})
       }
@@ -28,9 +28,9 @@ router.post('/', async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     pool.query(
-      `INSERT INTO users (roleid, name, emailid, password, active, gender, loginaccess, registrationstageid, usertimezone, usertimezoneoffset, phonenumber) VALUES (7, '${req.body.name}', '${req.body.emailid}', '${hashedPassword}', 1, ${req.body.gender}, 1, 1, 'Asia/Calcutta', 330, '${req.body.phonenumber}')`, async(err, rows)=>{
+      `INSERT INTO leadusers (roleid, name, emailid, password, active, gender, loginaccess, registrationstageid, usertimezone, usertimezoneoffset, phonenumber) VALUES (7, '${req.body.name}', '${req.body.emailid}', '${hashedPassword}', 1, ${req.body.gender}, 1, 1, 'Asia/Calcutta', 330, '${req.body.phonenumber}')`, async(err, rows)=>{
         if (err){
-          res.json({error: err})
+          res.status(500).json({error: err})
         }
         res.json(jwtTokens(req.body.emailid));
       });
@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
 
 router.delete('/', async (req,res)=>{
   try {
-    const users = await pool.query('DELETE FROM users');
+    const users = await pool.query('DELETE FROM leadusers');
     res.status(204).json(users.rows);
   } catch (error) {
     res.status(500).json({error: error.message});
