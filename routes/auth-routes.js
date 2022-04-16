@@ -12,8 +12,8 @@ router.post('/login', async (req, res) => {
     const { emailid, password } = req.body;
     pool.query(`SELECT * FROM leadusers WHERE emailid = '${emailid}'`, async(err, rows)=>{
       if (err) {
-        res.status(400).json({"error":err.message});
-        return;
+        console.log(err)
+        return res.status(400).json({"error":err.message});
       }
       if (rows.length == 0) return res.status(401).json({error:"Email is incorrect"});
     //PASSWORD CHECK
