@@ -19,7 +19,7 @@ router.get('/',authenticateToken, async (req, res) => {
       return res.json({users : rows});
     });
   } catch (error) {
-    returnres.status(500).json({error: error.message});
+    return res.status(500).json({error: error.message});
   }
 });
 
