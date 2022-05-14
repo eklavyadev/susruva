@@ -30,6 +30,7 @@ app.get('/api', authenticateToken , async(req, res, next) => {
       var sql = `select * from marketing where regid = ${req.params.id}`
       pool.query(sql, (err, row) => {
           if (err) {
+              console.log(err);
             res.status(400).json({"error":err.message});
             return;
           }
@@ -115,6 +116,7 @@ app.get('/api', authenticateToken , async(req, res, next) => {
       var sql = `INSERT INTO marketing (name, role, phone, email, class, country, subjects, requirements, Callstat, WAstat, emailstat, regid, date, action, username) VALUES ('${data.name}','${data.role}','${data.phone}','${data.email}','${data.class}','${data.country}','${data.subjects}','${data.requirements}','${data.Callstat}','${data.WAstat}','${data.emailstat}',NULL,'${data.date}','${data.action}', '${username}')`
       pool.query(sql, function (err, result) {
           if (err){
+              console.log(err);
               res.status(400).json({"error": err})
               return;
           }
